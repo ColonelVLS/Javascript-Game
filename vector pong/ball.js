@@ -5,15 +5,17 @@ var Ball = function (position, radius) {
     this.velocity = createVector(0, 0);
     this.acceleration = createVector(0, 0);
     this.empowered = false;
+    this.color = "white";
 
 
     this.show = function () {
-        fill("white");
+        fill(this.color);
+        noStroke();
         ellipse(this.position.x, this.position.y, this.radius, this.radius);
 
         if(this.empowered){
-            fill(random(["yellow", "blue"]));
-            ellipse(this.position.x, this.position.y, this.radius + 40, this.radius + 40);
+            fill("red");
+            ellipse(this.position.x, this.position.y, this.radius, this.radius);
         }
     };
 

@@ -20,6 +20,7 @@ var collisionDetection = function () {
 
     goalCheck();
 
+    item = Item.itemCheck(item);
 };
 
 var ballToPlayer1 = function () {
@@ -54,12 +55,12 @@ var ballToPlayer1 = function () {
             //if the user was moving towards the direction of the ball when they collided
             //then the ball will go faster
             if(p1.velocity.x < 0){
-                ball.velocity.x *= 1.5;
+                ball.velocity.x *= 1.3;
             }
             //similarly, if the user was moving in the opposite direction
             //the ball is slowed
             else if(p1.velocity.x > 0){
-                ball.velocity.x *= 0.5;
+                ball.velocity.x *= 0.8;
             }
 
             //collision with the ball, removes the empowered visual effect
@@ -82,7 +83,7 @@ var ballToPlayer2 = function () {
          */
         if(ball.velocity.x < 0){
             //with each bounce, if the energy is not maximized, increase it by 20 points
-            p2.energy += p2.energy>=100? 0 : 20;
+            p2.energy += p2.energy >= 100? 0 : 20;
             //increment the bounces counter
             bounces++;
             //if bounces exceed 10, the player height is reduced by a standard factor
@@ -100,13 +101,12 @@ var ballToPlayer2 = function () {
             //if the user was moving towards the direction of the ball when they collided
             //then the ball will go faster
             if(p2.velocity.x > 0){
-                console.log("accelerate thanks to p2");
-                ball.velocity.x *= 1.5;
+                ball.velocity.x *= 1.3;
             }
             //similarly, if the user was moving in the opposite direction
             //the ball is slowed
             else if(p2.velocity.x < 0){
-                ball.velocity.x *= 0.5;
+                ball.velocity.x *= 0.8;
             }
 
             //collision with the ball, removes the empowered visual effect
@@ -121,9 +121,33 @@ var ballToPlayer2 = function () {
 
 var ballToBarrier1 = function () {
 
+    if(p1.barrier){
+        if(ball.position.x - ball.radius <= p1.barrier.position.x + p1.barrier.width
+            && ball.position.x + ball.radius >= p1.barrier.position.x
+            && ball.position.y + ball.radius >= p1.barrier.position.y
+            && ball.position.y - ball.radius <= p1.barrier.position.y + p1.barrier.height){
+
+            ball.velocity.x *= -0.5;
+            glass.play();
+            p1.barrier = null;
+        }
+    }
+
 };
 
 var ballToBarrier2 = function () {
+
+    if(p2.barrier) {
+        if (ball.position.x - ball.radius <= p2.barrier.position.x + p2.barrier.width
+            && ball.position.x + ball.radius >= p2.barrier.position.x
+            && ball.position.y + ball.radius >= p2.barrier.position.y
+            && ball.position.y - ball.radius <= p2.barrier.position.y + p2.barrier.height) {
+
+            ball.velocity.x *= -0.5;
+            glass.play();
+            p2.barrier = null;
+        }
+    }
 
 };
 
@@ -143,6 +167,13 @@ var goalCheck = function () {
 
         //resetting the bounces counter
         bounces = 0;
+
+        //clearing all intervals and removing them from the array
+        for(var i=intervals.length - 1; i>=0; i--){
+            clearInterval(intervals[i]);
+            intervals.splice(i, 1);
+
+        }
 
         //resetting the player bat heights
         p1.height = playerHeight;

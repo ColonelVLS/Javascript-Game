@@ -1,5 +1,6 @@
 function Background(){
 
+    strokeWeight(1);
     stroke(100);        // field
     line(canvasWidth/2, 0,canvasWidth/2, canvasHeight);
     fill(0);

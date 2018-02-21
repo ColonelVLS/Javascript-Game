@@ -1,5 +1,12 @@
 new p5();
 
+/**
+ * NOTE:
+ * player 1 is by definition on the right side of the game
+ * and player 2 on the left. Almost all methods are based upon this convention.
+ */
+
+
 //CANVAS PROPERTIES
 const canvasWidth = window.innerWidth - 100;
 const canvasHeight = window.innerHeight - 50;
@@ -30,15 +37,53 @@ var ball = new Ball(createVector(canvasWidth/2, canvasHeight/2), 20);
 ball.velocity = createVector(initialBallVelocityX, initialBallVelocityY);
 
 //sound objects
-var blop = document.getElementById("blop");
-var glass = document.getElementById("glass");
+var blop = document.getElementById("blop"); //collision sound
+var glass = document.getElementById("glass"); //barrier break
+var sF = document.getElementById("stealthyFucker"); //stealthy fucker get (donny)
+var fuckenDruggo = document.getElementById("fuckenDruggo"); //you fucken druggo (sassy)
+var holyFuck = document.getElementById("holyFuck"); // holy fuck (Quinton)
+var holyShit = document.getElementById("holyShit"); // holy shit (Quinton)
+var mmmh = document.getElementById("mmmh"); // mmmmm *exhale* (Lez)
+var fuckenPussy = document.getElementById("fuckenPussy"); //fucken pussy (donny)
+var weAteThem = document.getElementById("weAteThem"); //we've already ate them (lez)
+var ohNo = document.getElementById("ohNo");
 
+//image objects, to be preloaded in the setup function
+var winnieblues;
+var stealthyFucker;
+var tripperSnipper;
+var centerBong;
+
+//preloading images
+function preload() {
+    winnieblues = loadImage("./graphics/winnie blue's.png");
+    centerBong = loadImage("./graphics/center bong.png");
+    tripperSnipper = loadImage("./graphics/tripper sniper.png");
+    stealthyFucker = loadImage("./graphics/stealthy fucker.png");
+}
+
+//setting up items array
+var items = [];
+var item;
+var intervalID;
+
+//the following is an array of intervals for possible uses throughout the game. When a player scores
+//all intervals are cleared
+var intervals = [];
 
 //setup
 function setup(){
     stroke(150);
     strokeWeight(2);
     createCanvas(canvasWidth,canvasHeight);
+    //filling the items array with an item object of each kind
+    Item.initializeArray(items);
+    //selecting a random item from the above array and placing it in the item variable. This will appear on the canvas
+    item = random(items);
+    //setting the item to be refreshed every 10 seconds with a new random one
+    intervalID = setInterval(function () {
+        item = random(items);
+    }, 10000);
 }
 
 
@@ -49,6 +94,10 @@ function draw() {
     background(0);
     Background();
 
+    //drawing the bong
+    imageMode(CENTER);
+    image(centerBong, canvasWidth/2, canvasHeight/2, centerBong.width/2.5, centerBong.height/2.5);
+
     //checking for keyboard events
     Keyboard();
 
@@ -56,6 +105,9 @@ function draw() {
     collisionDetection();
 
     //drawing the game objects
+    if(item){
+        item.show();
+    }
     ball.show();
     p1.show();
     p2.show();
